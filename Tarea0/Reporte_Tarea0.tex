@@ -1,0 +1,191 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage[left=1.5cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand\spanishtablename{Tabla}
+\title{\textsc{Simulación}}
+\author{\textsc{Fabiola Vázquez}}
+\date{}
+\begin{document}
+
+\maketitle
+\hrule
+\section{Generación de tiempos de llegada}
+Queremos generar los tiempos de llegadas de un proceso Poisson con razón $\lambda$, en los casos en que dicho proceso sea homogéneo o no. Haremos uso del lenguaje R \cite{R} en el IDE \textbf{R Studio} \cite{rstudio}. Utilizaremos el siguiente algoritmo \cite{SimulacionRoss}:
+
+
+\begin{itemize}
+\item[]\textsc{Paso 1}: $t=0, I=0.$
+\item[]\textsc{Paso 2}: Generar un número aleatorio $U$.
+\item[]\textsc{Paso 3}: $t=t-\frac{1}{\lambda}\log U.$ Si $t>T$, terminar.
+\item[]\textsc{Paso 4}: $I=I+1, S(I)=t$.
+\item[]\textsc{Paso 5:} Ir al \textsc{Paso 2.}
+\end{itemize}
+En el algoritmo, \texttt{t} es el tiempo, \texttt{I} es el número de eventos que han transcurrido hasta el tiempo \texttt{t}, y  \texttt{S(t)} es el tiempo del evento más reciente.
+
+En este proceso es importante crear números pseudoaleatorios, como lo menciona el \textsc{Paso 2} de nuestro algoritmo, para ello hacemos uso de la función \texttt{runif.} El siguiente código muestra la creación de la función \texttt{llegadasPH} para generar los tiempos de llegada. 
+
+
+
+\begin{lstlisting}[language=R]
+llegadasPH <- function(lambda, T) {
+  S <- vector("numeric")
+  t <- 0
+    
+  while(t <= T){
+      U <- runif(1, 0, 1)
+      t <- t - (1/lambda)*log(U)
+      if(t > T){
+          return(S)
+      } else{
+          S <- append(S, t)
+      }
+    
+    }
+}
+\end{lstlisting}
+La función depende de los parámetros \texttt{lambda} y \texttt{T} que son nuestra tasa de llegada y el tiempo a simular, respectivamente. Ya cargada la función, se le asigna valores a dichos parámetros y se generan los tiempos de llegada. Para poder reproducir los resultados es necesario fijar una semilla.
+
+\begin{lstlisting}[language=R]
+>set.seed(10)
+>llegadasPH(0.5,20)
+[1]  1.356603  3.719927  5.422302  6.155458 11.082469 14.061902
+[7] 16.647287 19.248952
+\end{lstlisting}
+
+Hacemos algo similar para el proceso de Poisson no homogéneo. Creamos una función llamada \texttt{llegadasPNH.}
+
+\begin{lstlisting}[language=R]
+#De momento, tomaremos lambda(t) = 2t+1 solo para ejemplificar
+#Esto hace que lambda = 2T+1 por ser creciente     
+llegadasPNH <- function(T){
+	lambda = 2*T + 1
+	S <- list()
+	t <- 0
+	
+	while(t <= T){
+		U <- runif(1,0,1)
+		t <- t - (1/lambda)*log(U)
+		if(t > T){
+		  return(S)
+		} else{
+			U <- runif(1,0,1)
+			if(U <= (2*t + 1)/lambda){
+				S <- append(S,list(tiempo=t, tipo="llegada"))
+			}
+		}
+	}
+}
+
+\end{lstlisting}
+Fijamos semilla y asignamos valores a los parámetros \texttt{lambda} y \texttt{T}
+
+\begin{lstlisting}[language=R]
+> set.seed(10)
+> llegadasPH(0.5,20)
+[1]  1.356603  3.719927  5.422302  6.155458 11.082469 14.061902
+[7] 16.647287 19.248952
+
+\end{lstlisting}
+
+
+\section{Simulación de línea de espera con un servidor}
+Ahora, consideremos un sistema al cual los clientes llegan de acuerdo a un proceso de Poisson no homogéno, tenemos solo un servidor, si este esta desocupado el cliente pasa al servicio, en caso contrario tiene que hacer fila. Cuando el servidor termina con un cliente, el siguiente en pasar es el que ha estado esperando más tiempo (disciplina \textbf{FIFO}).
+En el siguiente código, hecho en python \cite{python}, \texttt{n\_a} es el número de llegadas, \texttt{n\_d} es el número de salidas y \texttt{n} es el número de clientes en el sistema.  
+\begin{lstlisting}[language=python]
+import random, math
+def llegadasPoissonNoHomo(T):
+    Lambda = 2*T + 1
+    S = []
+    t = 0
+    while(t <= T):
+        U = random.uniform(0,1)
+        t = t - (1/Lambda)*math.log(U)
+        if t > T:
+            return S
+        else:
+            U = random.uniform(0,1)
+            if U <= (2*t + 1)/Lambda:
+                S.append((t, "llegada"))
+
+def llegadasPoisson(T, Lambda):
+    S = []
+    t = 0
+    while t <= T:
+        U = random.uniform(0,1)
+        t = t - (1/Lambda)*math.log(U)
+        if t > T:
+            return S
+        else:
+            S.append((t, "llegada"))
+
+def tiempoServicio(mu):
+    U = random.uniform(0,1)
+    return -math.log(1-U)/mu
+
+def procesaLlegada(evento):
+    global t, n, n_a, n_q, servidor_ocupado, mu
+    t = evento[0]
+    n = n+1
+    n_a = n_a + 1
+    
+    if servidor_ocupado == True:
+        n_q = n_q + 1
+    else:
+        servidor_ocupado = True
+        salida = (evento[0] + tiempoServicio(mu), "salida")
+        eventos.append(salida)
+
+def procesaSalida(evento):
+    global t, n, n_s, n_q, servidor_ocupado
+    t = evento[0]
+    n = n-1
+    n_s = n_s + 1
+    if n_q > 0:
+        n_q = n_q - 1
+        salida = (evento[0] + tiempoServicio(mu), "salida")
+        eventos.append(salida)
+    else:
+        servidor_ocupado = False
+
+n, n_a, n_s, n_q, t = 0, 0, 0, 0, 0
+servidor_ocupado = False
+mu = 1
+
+eventos = llegadasPoissonNoHomo(2)
+
+print("Al tiempo " + str(t) + " tenemos: ")
+print(str(n) + " personas en el sistema; ")
+print(str(n_a) + " llegadas;")
+print(str(n_s) + " salidas;")
+print(str(n_q) + " gente en fila. \n----------\n")
+
+while(eventos):
+    eventos.sort()
+    
+    siguiente_evento = eventos.pop(0)
+    
+    if siguiente_evento[1] == 'llegada':
+        procesaLlegada(siguiente_evento)
+    
+    if siguiente_evento[1] == 'salida':
+        procesaSalida(siguiente_evento)
+        
+    print("Al tiempo " + str(t) + " tenemos: ")
+    print(str(n) + " personas en el sistema; ")
+    print(str(n_a) + " llegadas;")
+    print(str(n_s) + " salidas;")
+    print(str(n_q) + " gente en fila. \n----------\n")
+\end{lstlisting}
+\bibliographystyle{plain} 
+\bibliography{Reporte_Tarea0}
+
+
+\end{document}
