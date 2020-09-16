@@ -1,0 +1,1 @@
+folder con las imágenes
