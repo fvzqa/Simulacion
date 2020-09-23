@@ -25,9 +25,11 @@ experimento <- function(largo,dim) {
 }
 datos <-  data.frame()
 total<-c()
-largo<-c(32,64,128,256,512,1024)
 
-for(largo in largo){
+
+
+for(e in 5:10){
+  largo=2**e
 for (dimension in 1:8){
   total[1]<-largo
   total[2]<-dimension
@@ -42,7 +44,7 @@ for (dimension in 1:8){
 l<-list()
 
 for(i in 1:48){
-  l[[i]]<-datos[i,3:502]
+  l[[i]]<-datos[i,3:(repeticiones+2)]
   l[[i]]<- l[[i]][l[[i]]<Inf]
     }
 
