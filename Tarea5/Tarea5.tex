@@ -42,17 +42,17 @@
 El objetivo de esta práctica \cite{elisapractica5} es aproximar el resultado de una integral utilizando el método Monte-Carlo, variando el tamaño de la muestra, al valor proporcionado por WolframAlpha \cite{wolfram}. El experimento se realiza con el software R versión 4.0.2 \cite{R} en un cuaderno de Jupyter \cite{jupyter}.
 
 \section{Experimento}
-Se quiere aproximar el resultado de la siguiente integral, 
+Se quiere aproximar el resultado de la siguiente integral 
 \begin{equation}
-\int_3^7 \frac{dx}{\exp(x) + \exp(-x)},
+\int_3^7 \frac{dx}{\exp(x) + \exp(-x)}.
 \end{equation}
-para ello se generan números pseudoaleatorios con distribución $g(x)=\frac{2}{\pi}f(x)$ haciendo uso de la función \texttt{r(AbscontDistribution(d = g)).} El código del experimento \cite{fabiola} está basado mayormente, en el código implementado por Schaeffer \cite{codigoelisapractica5}. 
+Para ello se generan números pseudoaleatorios con distribución $g(x)=\frac{2}{\pi}f(x)$, donde $f(x)=\frac{1}{\exp(x) + \exp(-x)}$, haciendo uso de la función \texttt{r(AbscontDistribution(d = g)).} El código del experimento \cite{fabiola} está basado mayormente, en el código implementado por Schaeffer \cite{codigoelisapractica5}. 
 
-Como se quiere comparar el valor de la integral obtenida mediante la simulación con el valor proporcionado por Wolfram (denotado como \texttt{wolfram}), la función \texttt{decimalesexactos}, descrita en el código \ref{lst:gc1}, nos regresa la cantidad de decimales que son iguales dichos valores.
+Como se quiere comparar el valor de la integral obtenida mediante la simulación con el valor proporcionado por Wolfram (denotado como \texttt{wolfram}), la función \texttt{decimalesexactos}, descrita en el código \ref{lst:gc1}, nos regresa la cantidad de decimales en que son coinciden dichos valores.
 
-En el experimento se varía el valor del parámetro \texttt{pedazo} de 1000 a 10000 en saltos de 1000, pero no se aproximaba tanto al valor de \texttt{wolfram}, por lo que se varía en otros rangos como de 50 a 500 y de 50000 a 95000, cada uno se replica 50 veces. El cuadro \ref{datos} muestra un fragmento de los datos recopilados en el experimento y la figura \ref{box1} muestra los gráficos de caja bigote de los valores de la integral obtenidos en el experimento. Como se puede apreciar en dicha figura, a mayor valor de \texttt{pedazo} más se aproxima al valor de \texttt{wolfram}.
+En el experimento se varía el valor del parámetro \texttt{pedazo} de 1000 a 10000 en saltos de 1000, pero no se aproximaba tanto al valor de \texttt{wolfram}, por lo que se varía en otros rangos como de 50 a 500 y de 50000 a 95000, haciendo 50 réplicas con cada uno. El cuadro \ref{datos} muestra un fragmento de los datos recopilados en el experimento y la figura \ref{box1} muestra los gráficos de caja bigote de los valores de la integral obtenidos en el experimento. Como se puede apreciar en dicha figura, a mayor valor de \texttt{pedazo} más se aproxima al valor de \texttt{wolfram}.
 
-En la figura \ref{box2} se muestran los decimales exactos obtenidos en las variaciones del tamaño de \texttt{pedazo}, como se aprecia entre mayor es el tamaño más decimales se aproximan al valor de \texttt{wolfram}. Aún cuando el tamaño de \texttt{pedazo} se varía en una gran número, no fue posible aproximarse al valor de \texttt{wolfram} a mas de cuatro decimales y aumentar a un mayor valor no fue posible. 
+En la figura \ref{box2} se muestran los decimales exactos obtenidos en las variaciones del tamaño de \texttt{pedazo}. Como se aprecia, entre mayor es el tamaño más decimales se aproximan al valor de \texttt{wolfram}. Aún cuando el tamaño de \texttt{pedazo} se varía en una gran número, no fue posible aproximarse al valor de \texttt{wolfram} a mas de cuatro decimales, y aumentar a un mayor valor no fue computacionalmente posible. 
  
 \begin{lstlisting}[label=lst:gc1,caption=Función \texttt{decimalesexactos}., frame = single]
 decimalesexactos <- function (x){
@@ -72,7 +72,7 @@ decimalesexactos <- function (x){
 \caption{Fragmento de los datos obtenidos en el experimento}
 \begin{tabular}{rrrr}
   \hline
- Corrida & Pedazo & Integral & Decimales Exactos \\ 
+ Corrida & Pedazo & Integral & Precisión decimal  \\ 
   \hline
 1 & 1000 & 0.0488361 & 5 \\ 
   105 & 3000 & 0.0488884 & 4 \\ 
@@ -89,14 +89,14 @@ decimalesexactos <- function (x){
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{boxplot.png}
-	\caption{Gráficas de caja bigote.}
+	\caption{Gráficas de caja bigote de los valores de la integral obtenidos variando el tamaño de \texttt{pedazo}. En rojo tenemos el valor de \texttt{wolfram}.}
 	\label{box1}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{boxplot2.png}
-	\caption{Gráficas de caja bigote.}
+	\caption{Gráficas de caja bigote de la cantidad de decimales en que coinciden los valores obtenidos de la integral con el valor de \texttt{wolfram}.}
 	\label{box2}
 \end{figure}
 \subsection{Pruebas de correlación}
@@ -123,14 +123,14 @@ Para el reto 1, hay que automatizar y paralelizar la estimación del valor $\pi$
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{reto.png}
-	\caption{Gráficas de caja bigote.}
+	\caption{Gráficas de caja bigote de las aproximaciones de \texttt{pi} obtenidas variando el tamaño de \texttt{runs}.}
 	\label{box3}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{reto1.png}
-	\caption{Gráficas de caja bigote.}
+	\caption{Gráficas de caja bigote de la cantidad de decimales que coincide la aproximación de $\pi$ obtenida con el valor de \texttt{pi}.}
 	\label{box4}
 \end{figure}
 \bibliographystyle{plain} 
