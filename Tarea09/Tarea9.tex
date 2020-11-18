@@ -77,7 +77,7 @@ En esta práctica \cite{elisapractica9} se tiene una cantidad \texttt{n} de part
 \section{Experimento}
 Las partículas es posicionada normalmente al azar en el cuadro unitario y además estas poseen una carga que causa fuerzas de repulsión y atracción con las demás partículas si dos partículas tienen el mismo signo o diferente, respectivamente. Se desea añadir otro atributo a las partículas que afecte dicha interacción, este atributo es la masa y se considera el tamaño de ésta en $\{0.2, 0.4, 0.6, 0.8, 1.0\}.$ 
 
-En la figura \ref{im} se muestra la interacción entre 100 partículas, como se agrega el atributo de la masa, esta es representada con círculos de diferente tamaño para mostrar las diferencia entre las masas de las partículas. Esta interacción se puede apreciar de una mejor manera en una \href{https://github.com/fvzqa/Simulacion/blob/master/Tarea09/Images/p9.gif}{animación}.
+En la figura \ref{im} se muestra la interacción entre 100 partículas, el atributo de la masa es representado con círculos de diferente tamaño para mostrar las diferencia entre las masas de las partículas. Esta interacción se puede apreciar de una mejor manera en una \href{https://github.com/fvzqa/Simulacion/blob/master/Tarea09/Images/p9.gif}{animación}.
  \begin{figure}
  	\centering 
  	\begin{subfigure}[b]{0.3\linewidth}
@@ -106,7 +106,7 @@ En la figura \ref{im} se muestra la interacción entre 100 partículas, como se 
  		\label{4}
 \end{figure}
 
-En el experimento se considera la interacción de 500 partículas y como se quiere que la masa afecte la velocidad, la fuerza calculada mediante las cargas de las partículas se divide entre la masa que posee la partícula, se quiere lograr que masas con mayor masa se muevan más despacio que las que tienen menor masa. Durante cada iteración se calcula la distancia que ha recorrido cada partícula para saber su velocidad promedio, toda la información se almacena en un \texttt{data.frame}, el cuadro \ref{data} muestra un fragmento de los datos recopilados.
+En el experimento se considera la interacción de 500 partículas y como se quiere que la masa afecte la velocidad, la fuerza calculada mediante las cargas de las partículas se divide entre la masa que posee la partícula, con esto se quiere lograr que partículas con mayor masa se muevan más despacio que las que tienen menor masa. Durante cada iteración se calcula la distancia que ha recorrido cada partícula para saber su velocidad promedio, toda la información se almacena en un \texttt{data.frame}, el cuadro \ref{data} muestra un fragmento de los datos recopilados.
 
 Con la información obtenida, se realizan diversos gráficos de dispersión a pares de los factores: velocidad, masa, posición inicial y carga. La imagen \ref{4} muestra dichos gráficos y como se aprecia la carga y la masa afectan a la velocidad.
 
